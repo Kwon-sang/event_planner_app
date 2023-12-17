@@ -6,9 +6,9 @@ from src.routes import users, events
 app = FastAPI()
 app.include_router(router=users.router)
 app.include_router(router=events.router)
-settings = Settings()
 
 
 @app.on_event("startup")
 async def init_db():
+    settings = Settings()
     await settings.initialize_database()

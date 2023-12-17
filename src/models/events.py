@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
 from beanie import Document
 
 
@@ -14,7 +13,7 @@ class Event(Document):
     model_config = {
         "json_schema_extra": {
             "example": {
-                "title": "Swimming",
+                "title": "Go to Swimming",
                 "image": "http://linktoimage.com/image.jpg",
                 "description": "My swimming event plan",
                 "tags": ["swimming", "exercise", "hobby"],
@@ -27,21 +26,9 @@ class Event(Document):
         name = "events"
 
 
-class EventUpdate(BaseModel):
+class EventUpdate(Event):
     title: Optional[str] = None
     image: Optional[str] = None
     description: Optional[str] = None
     tags: Optional[List[str]] = None
     location: Optional[str] = None
-
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "title": "Swimming",
-                "image": "http://linktoimage.com/image.jpg",
-                "description": "My swimming event plan",
-                "tags": ["swimming", "exercise", "hobby"],
-                "location": "Osan city, kr"
-            }
-        }
-    }

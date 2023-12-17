@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, status
 
 from src.models.users import UserSignup
 
-
 router = APIRouter(prefix="/users", tags=["User"])
 
 users = {}

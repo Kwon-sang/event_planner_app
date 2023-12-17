@@ -1,17 +1,18 @@
-from typing import Any
+from typing import Any, Optional, List
 
-from pydantic import BaseConfig, BaseModel
+from pydantic import BaseConfig
+from beanie import init_beanie, PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
-from beanie import init_beanie, Document, PydanticObjectId
 
-from src.models.events import Event
+from ..models.events import Event
+# from ..models.users import User
 
 
 class Settings(BaseConfig):
-    MONGO_URL = "mongodb://localhost:27017/planner"
+    MONGO_DB_URL = "mongodb://localhost:27017/planner"
 
     async def initialize_database(self):
-        client = AsyncIOMotorClient(self.MONGO_URL)
+        client = AsyncIOMotorClient(self.MONGO_DB_URL)
         await init_beanie(database=client.get_default_database(), document_models=[Event])
 
 
@@ -19,36 +20,28 @@ class Database:
     def __init__(self, model):
         self.model = model
 
-    async def save(self, document: Document):
-        await document.create()
-        return
+    async def save(self, body: Any):
+        await body.create()
 
-    async def get(self, model_id: PydanticObjectId) -> Any:
-        document = await self.model.get(model_id)
-        if document:
-            return document
-        return False
+    async def get(self, _id: PydanticObjectId) -> Optional[Any]:
+        doc = await self.model.get(document_id=_id)
+        return doc if doc else None
 
-    async def get_all(self):
-        documents = await self.model.find_all().to_list()
-        return documents
+    async def get_all(self) -> List[Any]:
+        return await self.model.find_all().to_list()
 
-
-    async def update(self, model_id: PydanticObjectId, body: BaseModel) -> Any:
-        document_id = model_id
-        descript_body = body.model_dump(exclude_none=True)
+    async def update(self, _id: PydanticObjectId, body) -> Any:
+        body_dict = body.model_dump(exclude_none=True)
         update_query = {
-            "$set": {field: value for field, value in descript_body.items()}
+            "$set": {key: value for key, value in body_dict.items() if value}
         }
-        document = await self.get(document_id)
-        if not document:
-            return False
-        await document.update(update_query)
-        return document
+        if doc := await self.get(_id):
+            await doc.update(update_query)
+            return doc
+        return None
 
-    async def delete(self, model_id: PydanticObjectId) -> bool:
-        doc = await self.get(model_id)
-        if not doc:
-            return False
-        await doc.delete()
-        return True
+    async def delete(self, _id: PydanticObjectId) -> bool:
+        if doc := await self.get(_id):
+            await doc.delete()
+            return True
+        return False

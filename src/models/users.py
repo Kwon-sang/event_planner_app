@@ -9,6 +9,8 @@ class BaseUser(BaseModel):
     username: str
     password: str
 
+class User(BaseUser):
+    pass
 
 class UserSignup(BaseUser):
     email: Optional[str] = None
