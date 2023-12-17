@@ -5,7 +5,7 @@ from beanie import init_beanie, PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from ..models.events import Event
-# from ..models.users import User
+from ..models.users import User
 
 
 class Settings(BaseConfig):
@@ -13,7 +13,7 @@ class Settings(BaseConfig):
 
     async def initialize_database(self):
         client = AsyncIOMotorClient(self.MONGO_DB_URL)
-        await init_beanie(database=client.get_default_database(), document_models=[Event])
+        await init_beanie(database=client.get_default_database(), document_models=[Event, User])
 
 
 class Database:

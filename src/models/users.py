@@ -1,42 +1,45 @@
 from typing import Optional, List
 
+from beanie import Document
 from pydantic import BaseModel, EmailStr
+from sqlalchemy import Column
 
 from .events import Event
 
 
-class BaseUser(BaseModel):
-    username: str
+class BaseUser(Document):
+    username: str = Column(index=True, unique=True)
     password: str
+
 
 class User(BaseUser):
-    pass
-
-class UserSignup(BaseUser):
-    email: Optional[str] = None
+    email: Optional[EmailStr] = None
     events: Optional[List[Event]] = None
 
+    class Settings:
+        name = "users"
+
+
+class UserSignIn(BaseUser):
     model_config = {
         "json_schema_extra": {
             "example": {
-                "email": "UserEmail@gmail.com",
-                "username": "User Name",
-                "password": "User Password",
-                "events": []
+                "username": "Username",
+                "password": "Password",
             }
         }
     }
 
 
-class UserSignIn(BaseModel):
-    username: str
-    password: str
-
+class UserSignup(User):
     model_config = {
         "json_schema_extra": {
             "example": {
-                "username": "User Name",
-                "password": "User Password"
+                "username": "Username",
+                "password": "Password",
+                "email": "userEmail@google.com",
+                "event": ["event1", "evnet2"]
             }
         }
     }
+
