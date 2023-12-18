@@ -10,6 +10,7 @@ from ..models.users import User
 
 class Settings(BaseConfig):
     MONGO_DB_URL = "mongodb://localhost:27017/planner"
+    SECRET_KEY: Optional[str] = "HI5HL3SFSD$S"
 
     async def initialize_database(self):
         client = AsyncIOMotorClient(self.MONGO_DB_URL)

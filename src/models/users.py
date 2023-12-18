@@ -1,14 +1,13 @@
 from typing import Optional, List
 
-from beanie import Document
+from beanie import Document, Indexed
 from pydantic import BaseModel, EmailStr
-from sqlalchemy import Column
 
 from .events import Event
 
 
 class BaseUser(Document):
-    username: str = Column(index=True, unique=True)
+    username: Indexed(str, unique=True)
     password: str
 
 
@@ -20,26 +19,20 @@ class User(BaseUser):
         name = "users"
 
 
-class UserSignIn(BaseUser):
+class UserSignup(BaseUser):
+    email: Optional[EmailStr] = None
+
     model_config = {
         "json_schema_extra": {
             "example": {
-                "username": "Username",
-                "password": "Password",
+                "username": "username",
+                "password": "password",
+                "email": "userEmail@google.com"
             }
         }
     }
 
 
-class UserSignup(User):
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "username": "Username",
-                "password": "Password",
-                "email": "userEmail@google.com",
-                "event": ["event1", "evnet2"]
-            }
-        }
-    }
-
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

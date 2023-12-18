@@ -3,12 +3,16 @@ from typing import List, Optional
 from beanie import Document
 
 
-class Event(Document):
+class BaseEvent(Document):
     title: str
-    image: str
     description: str
-    tags: List[str]
-    location: str
+    image: Optional[str] = None
+    location: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+
+class Event(BaseEvent):
+    owner: Optional[str] = None
 
     model_config = {
         "json_schema_extra": {
@@ -26,7 +30,7 @@ class Event(Document):
         name = "events"
 
 
-class EventUpdate(Event):
+class EventUpdate(BaseEvent):
     title: Optional[str] = None
     image: Optional[str] = None
     description: Optional[str] = None
