@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.database.connection import Settings
+from src.database.connection import Database
 from src.routes import users, events
 
 
@@ -11,5 +11,4 @@ app.include_router(router=events.router)
 
 @app.on_event("startup")
 async def init_db():
-    settings = Settings()
-    await settings.initialize_database()
+    await Database.init_db()

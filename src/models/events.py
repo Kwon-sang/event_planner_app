@@ -10,10 +10,6 @@ class BaseEvent(Document):
     location: Optional[str] = None
     tags: Optional[List[str]] = None
 
-
-class Event(BaseEvent):
-    owner: Optional[str] = None
-
     model_config = {
         "json_schema_extra": {
             "example": {
@@ -25,6 +21,10 @@ class Event(BaseEvent):
             }
         }
     }
+
+
+class Event(BaseEvent):
+    owner: Optional[str] = None
 
     class Settings:
         name = "events"

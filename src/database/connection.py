@@ -1,6 +1,5 @@
 from typing import Any, Optional, List
 
-from pydantic_settings import BaseSettings
 from beanie import init_beanie, PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -8,18 +7,18 @@ from ..models.events import Event
 from ..models.users import User
 
 
-class Settings(BaseSettings):
-    MONGO_DB_URL: str = "mongodb://localhost:27017/planner"
-    SECRET_KEY: Optional[str] = "HI5HL3SFSD$S"
-
-    async def initialize_database(self):
-        client = AsyncIOMotorClient(self.MONGO_DB_URL)
-        await init_beanie(database=client.get_default_database(), document_models=[Event, User])
-
-
 class Database:
+
+    DB_URL: str = "mongodb://localhost:27017/planner"
+    DOC_MODELS = [Event, User]
+
     def __init__(self, model):
         self.model = model
+
+    @classmethod
+    async def init_db(cls):
+        client = AsyncIOMotorClient(cls.DB_URL)
+        await init_beanie(database=client.get_default_database(), document_models=cls.DOC_MODELS)
 
     async def save(self, body: Any):
         await body.create()

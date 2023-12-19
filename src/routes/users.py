@@ -9,7 +9,6 @@ from ..auth.hash_password import HashPassword
 from ..auth.jwt_handler import create_access_token
 
 router = APIRouter(prefix="/users", tags=["User"])
-
 user_database = Database(model=User)
 
 

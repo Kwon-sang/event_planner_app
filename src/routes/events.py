@@ -1,4 +1,4 @@
-from typing import List, Type, Annotated
+from typing import List, Annotated
 
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, status, Depends
