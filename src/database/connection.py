@@ -1,6 +1,6 @@
 from typing import Any, Optional, List
 
-from pydantic import BaseConfig
+from pydantic_settings import BaseSettings
 from beanie import init_beanie, PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -8,8 +8,8 @@ from ..models.events import Event
 from ..models.users import User
 
 
-class Settings(BaseConfig):
-    MONGO_DB_URL = "mongodb://localhost:27017/planner"
+class Settings(BaseSettings):
+    MONGO_DB_URL: str = "mongodb://localhost:27017/planner"
     SECRET_KEY: Optional[str] = "HI5HL3SFSD$S"
 
     async def initialize_database(self):
